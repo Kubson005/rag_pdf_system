@@ -216,3 +216,37 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd/
+.DocumentRevisions-V100
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+
+# Local project data / generated artifacts
+vector_db/
+vector_store/
+chroma/
+uploads/
+downloads/
+cache/
+logs/
+models/
+*.sqlite3
+*.db
+
+# Local environment overrides
+.env.local
+.env.*.local
+
+# data
+*.pdf
