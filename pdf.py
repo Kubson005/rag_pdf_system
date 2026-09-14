@@ -1,5 +1,6 @@
 from pypdf import PdfReader
 
+
 def load_pdf(filename):
     reader = PdfReader(filename)
     num_pages = len(reader.pages)
@@ -11,23 +12,16 @@ def load_pdf(filename):
 
     return document
 
-def chunk_text(text, chunk_size=500, imposition=50):
-    chunks = []
-    size = len(text)
 
-    for i in range(0, size, chunk_size):
-        if i == 0:
-            chunks.append(text[i:i + chunk_size + imposition])
-        elif i == size:
-            chunks.append(text[i - imposition:i + chunk_size])
-        else:
-            chunks.append(text[i - imposition:i + chunk_size + imposition])
+def chunk_text(text, chunk_size=100, overlap=20):
+    chunks = []
+
+    step = chunk_size - overlap
+    for i in range(0, len(text), step):
+        chunk = text[i : i + chunk_size]
+        if chunk:
+            chunks.append(chunk)
+        if i + chunk_size >= len(text):
+            break
 
     return chunks
-
-text = load_pdf("file.pdf")
-
-chunks = chunk_text(text)
-
-print(chunks[0])
-print(chunks[1])
