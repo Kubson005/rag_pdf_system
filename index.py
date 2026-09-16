@@ -1,11 +1,33 @@
 import chromadb
 from chromadb.utils import embedding_functions
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+import re
 
-from pdf import load_pdf, chunk_text
+from pdf import load_pdf
+
+def clean(text):
+    url = r'https?://\S+|www\.\S+'
+    mail = r'\S+@\S+'
+
+    text = re.sub(' +', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    text = re.sub(url, '', text)
+    text = re.sub(mail, '', text)
+
+    return text
 
 def prepare_text(filename):
     text = load_pdf(filename)
-    chunks = chunk_text(text)
+    text = clean(text)
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,    
+        chunk_overlap=100,  
+        length_function=len,
+        is_separator_regex=False
+    )
+
+    chunks = text_splitter.split_text(text)
 
     client = chromadb.PersistentClient(path="./chroma_db")
     ef = embedding_functions.SentenceTransformerEmbeddingFunction(
@@ -25,5 +47,4 @@ def prepare_text(filename):
         ids=[f"id_{i}" for i in range(len(chunks))],
     )
 
-
-
+prepare_text("file.pdf")
